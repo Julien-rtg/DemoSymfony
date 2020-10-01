@@ -3,4 +3,20 @@
 
 {% block body %}
 
+<section class="articles">
+
+    {% for article in articles %}
+        <article>
+            <h2>{{ article.title }}</h2>
+            <div class="metadata">Ecrit le {{ article.createdAt | date('d/m/y') }} à {{ article.createdAt | date('H:i') }} dans la catégorie Politique</div>
+            <div class="content">
+                <img src="{{ article.image }}" alt="">
+                {{ article.content | raw }}
+                <a href="{{ path('blogShow', {'id' : article.id}) }}" class="btn btn-primary">Voir l'article en entier</a>
+            </div>
+        </article>
+    {% endfor %}
+
+</section>
+
 {% endblock %}
