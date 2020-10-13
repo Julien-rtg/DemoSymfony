@@ -4,6 +4,11 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
 
@@ -31,9 +36,38 @@ class BlogController extends AbstractController
 
     /**
      * @Route("/blog/new", name="newArticle")
+     * @Route("/blog/{id}/edit", name="blogEdit")
      */
-    public function new(){
-        return $this->render('blog/newArticle.html.twig');
+    public function form(Article $article = null, Request $request, EntityManagerInterface $manager){
+
+        if(!$article){
+            $article = new Article();
+        }
+
+        $form = $this->createFormBuilder($article)
+                     ->add('title')
+                     ->add('content')
+                     ->add('image')
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            if(!$article->getId()){
+                $article->setCreatedAt(new \DateTime());
+            }
+
+            $manager->persist($article);
+            $manager->flush();
+
+            return $this->redirectToRoute('blogShow', [
+                'id' => $article->getId()
+            ]);
+        }
+
+        return $this->render('blog/newArticle.html.twig', [
+            'formArticle' => $form->createView(),
+        ]);
     }
 
     /**
