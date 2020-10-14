@@ -8,9 +8,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
+use App\Form\ArticleType;
+
 
 class BlogController extends AbstractController
 {
@@ -38,17 +41,13 @@ class BlogController extends AbstractController
      * @Route("/blog/new", name="newArticle")
      * @Route("/blog/{id}/edit", name="blogEdit")
      */
-    public function form(Article $article = null, Request $request, EntityManagerInterface $manager){
+    public function new(Article $article = null, Request $request, EntityManagerInterface $manager){
 
         if(!$article){
             $article = new Article();
         }
 
-        $form = $this->createFormBuilder($article)
-                     ->add('title')
-                     ->add('content')
-                     ->add('image')
-                     ->getForm();
+        $form = $this->createForm(ArticleType::class, $article);
 
         $form->handleRequest($request);
 
@@ -67,6 +66,23 @@ class BlogController extends AbstractController
 
         return $this->render('blog/newArticle.html.twig', [
             'formArticle' => $form->createView(),
+            'editMode' => $article->getId() !== null
+        ]);
+    }
+
+
+    /**
+     * @Route("/blog/edit", name="blogEditArticle")
+     */
+    public function modify(Article $article = null, Request $request, EntityManagerInterface $manager, ArticleRepository $repo){
+
+        $articles = $repo->findAll();
+
+        $form = $this->createForm(ArticleType::class, $article);
+
+        return $this->render('blog/modifyArticle.html.twig', [
+            'formArticle' => $form->createView(),
+            'articles' => $articles
         ]);
     }
 

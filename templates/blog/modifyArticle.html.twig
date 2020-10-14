@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme formArticle 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+
+    <h1>Choisir un article à modifer :</h1>
+
+
+    <select name="selectArticle" id="" class="btn btn-info">
+        {% for article in articles %}
+            <option value="{{ article.title }}">{{ article.title }}</option>
+        {% endfor %}
+    </select>
+
+
+    <h2>Modifier un article :</h2>
+
+    {{ form_start(formArticle) }}
+
+    {{ form_row(formArticle.title) }}
+    {{ form_row(formArticle.content) }}
+    {{ form_row(formArticle.image) }}
+
+
+    <button type="submit" class="btn btn-primary">Enregistrer modification</button>
+
+    {{ form_end(formArticle) }}
+
+{% endblock %}
