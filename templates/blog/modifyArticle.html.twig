@@ -5,26 +5,29 @@
 {% block body %}
 
     <h1>Choisir un article à modifer :</h1>
+    <form action="" method="">
+        <select name="selectArticle" id="" class="btn btn-info">
+            {% for article in articles %}
+                <option value="{{ article.id }}">{{ article.title }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn btn-primary">Valider</button>
+    </form>
+
+    {% if app.request.get('selectArticle') %}
+        <h2>Modifier un article :</h2>
+
+        {{ form_start(formArticle) }}
+
+        {{ form_row(formArticle.title, {'attr': {'placeholder': "Titre de l'article"}} ) }}
+        {{ form_row(formArticle.content, {'attr': {'placeholder': "Contenu"}} ) }}
+        {{ form_row(formArticle.image, {'attr': {'placeholder' : "Image"}} ) }}
 
 
-    <select name="selectArticle" id="" class="btn btn-info">
-        {% for article in articles %}
-            <option value="{{ article.title }}">{{ article.title }}</option>
-        {% endfor %}
-    </select>
+        <button type="submit" class="btn btn-primary">Enregistrer modification</button>
 
-
-    <h2>Modifier un article :</h2>
-
-    {{ form_start(formArticle) }}
-
-    {{ form_row(formArticle.title) }}
-    {{ form_row(formArticle.content) }}
-    {{ form_row(formArticle.image) }}
-
-
-    <button type="submit" class="btn btn-primary">Enregistrer modification</button>
-
-    {{ form_end(formArticle) }}
+        {{ form_end(formArticle) }}
+    {% endif %}
 
 {% endblock %}

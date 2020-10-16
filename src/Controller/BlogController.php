@@ -80,6 +80,21 @@ class BlogController extends AbstractController
 
         $form = $this->createForm(ArticleType::class, $article);
 
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+
+            $articles->setTitle($article->getTitle());
+            $articles->setContent($article->getContent());
+
+            $manager->persist($article);
+            $manager->flush();
+
+            return $this->redirectToRoute('blogShow', [
+                'id' => $article->getId()
+            ]);
+        }
+
         return $this->render('blog/modifyArticle.html.twig', [
             'formArticle' => $form->createView(),
             'articles' => $articles
