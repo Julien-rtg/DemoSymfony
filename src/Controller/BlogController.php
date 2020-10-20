@@ -41,7 +41,7 @@ class BlogController extends AbstractController
      * @Route("/blog/new", name="newArticle")
      * @Route("/blog/{id}/edit", name="blogEdit")
      */
-    public function new(Article $article = null, Request $request, EntityManagerInterface $manager){
+    public function edit(Article $article = null, Request $request, EntityManagerInterface $manager){
 
         if(!$article){
             $article = new Article();
@@ -74,30 +74,12 @@ class BlogController extends AbstractController
     /**
      * @Route("/blog/edit", name="blogEditArticle")
      */
-    public function modify(Article $article = null, Request $request, EntityManagerInterface $manager, ArticleRepository $repo){
+    public function modify(ArticleRepository $repo){
 
         $articles = $repo->findAll();
 
-        $form = $this->createForm(ArticleType::class, $article);
-
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid()){
-
-            $articles->setTitle($article->getTitle());
-            $articles->setContent($article->getContent());
-
-            $manager->persist($article);
-            $manager->flush();
-
-            return $this->redirectToRoute('blogShow', [
-                'id' => $article->getId()
-            ]);
-        }
-
         return $this->render('blog/modifyArticle.html.twig', [
-            'formArticle' => $form->createView(),
-            'articles' => $articles
+            'articles' => $articles,
         ]);
     }
 

@@ -9,6 +9,8 @@
             <img src="{{ article.image }}" alt="">
             {{ article.content | raw }}
         </div>
+
+        <a href="{{ path('blogEdit', {'id': article.id}) }}" class="btn btn-primary">Modifier article</a>
     </article>
 
 {% endblock %}
